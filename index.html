@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Desafíos</title>
-    <link href="css/styles.css" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="css/styles.css" rel="stylesheet">
 </head>
 <body>
 
@@ -26,9 +28,12 @@
                             <span id="badge-n1" class="badge bg-success p-2">Desbloqueado</span>
                         </div>
                         <p class="text-secondary-custom mb-4">El sistema requiere la verificación de tus coordenadas espaciales para habilitar los siguientes módulos.</p>
-                        <button id="btn-ubicacion" class="btn-primary">
-                            <i class="fas fa-satellite-dish"></i> Obtener Ubicación Actual
-                        </button>
+                        <div class="d-flex gap-2">
+                            <button id="btn-ubicacion" class="btn-primary">
+                                <i class="fas fa-satellite-dish"></i> Obtener Ubicación Actual
+                            </button>
+                            <button id="btn-reset-n1" class="btn btn-secondary d-none" title="Volver a calcular"><i class="fas fa-redo"></i></button>
+                        </div>
                         <div id="resultado-ubicacion" class="d-none alert alert-custom-success mt-4">
                             <div class="row text-center py-2">
                                 <div class="col-6 border-end">
@@ -56,9 +61,12 @@
                         <p class="text-secondary-custom mb-4">Utiliza las herramientas nativas de dibujo gráfico para trazar e identificar tus coordenadas en el cuadrante.</p>
                         
                         <div class="text-center mb-0">
-                            <button id="btn-dibujar-mapa" class="btn btn-info text-dark fw-bold px-4 mb-3">
-                                <i class="fas fa-pencil-alt"></i> Generar Mapa Cartográfico
-                            </button>
+                            <div class="d-flex justify-content-center gap-2 mb-3">
+                                <button id="btn-dibujar-mapa" class="btn btn-info text-dark fw-bold px-4">
+                                    <i class="fas fa-pencil-alt"></i> Generar Mapa Cartográfico
+                                </button>
+                                <button id="btn-reset-n2" class="btn btn-secondary d-none" title="Redibujar Mapa"><i class="fas fa-redo"></i></button>
+                            </div>
                             <div class="d-flex justify-content-center">
                                 <canvas id="mapa-canvas" width="500" height="300" style="display: none;"></canvas>
                             </div>
@@ -81,9 +89,12 @@
                                 <div class="video-container bg-dark rounded border mb-3 overflow-hidden position-relative" style="background: #0f172a;">
                                     <video id="webcam-video" autoplay playsinline class="w-100 h-auto d-block" style="transform: scaleX(-1);"></video>
                                 </div>
-                                <button id="btn-capturar-foto" class="btn btn-success fw-bold w-100 mb-2">
-                                    <i class="fas fa-camera-retro"></i> Capturar Fotografía
-                                </button>
+                                <div class="d-flex gap-2">
+                                    <button id="btn-capturar-foto" class="btn btn-success fw-bold w-100">
+                                        <i class="fas fa-camera-retro"></i> Capturar Fotografía
+                                    </button>
+                                    <button id="btn-reset-n3" class="btn btn-secondary d-none w-100"><i class="fas fa-redo"></i> Tomar Otra Foto</button>
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <h5 class="fw-bold mb-2 text-secondary-custom text-start"><i class="fas fa-image"></i> Archivo Almacenado</h5>
@@ -105,9 +116,12 @@
                             <span id="badge-n4" class="badge bg-danger p-2">Desbloqueado</span>
                         </div>
                         <p class="text-secondary-custom mb-4">Simulación masiva de 20,000 registros ambientales gestionados en hilos paralelos independientes mediante Web Workers nativos.</p>
-                        <button id="btn-iniciar-worker-n4" class="btn btn-primary fw-bold px-4 mb-4">
-                            <i class="fas fa-play"></i> Iniciar Procesamiento Masivo
-                        </button>
+                        <div class="d-flex gap-2 mb-4">
+                            <button id="btn-iniciar-worker-n4" class="btn btn-primary fw-bold px-4">
+                                <i class="fas fa-play"></i> Iniciar Procesamiento Masivo
+                            </button>
+                            <button id="btn-reset-n4" class="btn btn-secondary d-none" title="Reiniciar Simulación"><i class="fas fa-redo"></i></button>
+                        </div>
                         <div class="mb-4">
                             <div class="d-flex justify-content-between mb-1">
                                 <span class="text-secondary-custom small fw-bold" id="progress-text">Estado del Web Worker: En espera</span>
@@ -150,9 +164,12 @@
                             <span id="badge-n5" class="badge bg-danger p-2">Desbloqueado</span>
                         </div>
                         <p class="text-secondary-custom mb-4">Procesamiento masivo de 250,000 registros con filtrado de anomalías (valores negativos) y exportación de telemetría en JSON.</p>
-                        <button id="btn-iniciar-worker-n5" class="btn btn-danger fw-bold px-4 mb-4">
-                            <i class="fas fa-bolt"></i> Abrir Portal Cuántico
-                        </button>
+                        <div class="d-flex gap-2 mb-4">
+                            <button id="btn-iniciar-worker-n5" class="btn btn-danger fw-bold px-4">
+                                <i class="fas fa-bolt"></i> Abrir Portal Cuántico
+                            </button>
+                            <button id="btn-reset-n5" class="btn btn-secondary d-none" title="Reiniciar Portal"><i class="fas fa-redo"></i></button>
+                        </div>
                         <div class="mb-4">
                             <div class="d-flex justify-content-between mb-1">
                                 <span class="text-secondary-custom small fw-bold" id="progress-text-n5">Estado: En espera</span>
@@ -205,6 +222,17 @@
         </div>
     </main>
 
+    <div id="custom-modal-overlay" class="d-none">
+        <div class="custom-modal-box card shadow-lg border-danger">
+            <h4 class="text-danger fw-bold mb-3"><i class="fas fa-exclamation-triangle"></i> Alerta del Sistema</h4>
+            <p class="text-secondary-custom mb-4">¿Estás seguro de que deseas reiniciar <strong>TODO</strong> el Escape Room? Perderás tu evidencia fotográfica, los JSON generados y todo tu progreso volverá a cero.</p>
+            <div class="d-flex justify-content-end gap-3">
+                <button id="btn-cancelar-reinicio" class="btn btn-secondary fw-bold px-4" style="background-color: #64748b; color: white; border: none;">Cancelar</button>
+                <button id="btn-confirmar-reinicio" class="btn btn-danger fw-bold px-4">Sí, Reiniciar</button>
+            </div>
+        </div>
+    </div>
+    
     <script src="js/main.js"></script>
     <script src="js/nivel1.js"></script>
     <script src="js/nivel2.js"></script>

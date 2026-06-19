@@ -22,20 +22,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // --- ENRUTADOR DE EVENTOS ---
 document.body.addEventListener('click', (e) => {
-    if (e.target && (e.target.id === 'btn-ubicacion' || e.target.closest('#btn-ubicacion'))) {
-        ejecutarGeolocalizacion();
+    // Eventos principales de los niveles
+    if (e.target && (e.target.id === 'btn-ubicacion' || e.target.closest('#btn-ubicacion'))) ejecutarGeolocalizacion();
+    if (e.target && (e.target.id === 'btn-dibujar-mapa' || e.target.closest('#btn-dibujar-mapa'))) dibujarMapaCartografico();
+    if (e.target && (e.target.id === 'btn-capturar-foto' || e.target.closest('#btn-capturar-foto'))) capturarFotografiaEvidencia();
+    if (e.target && (e.target.id === 'btn-iniciar-worker-n4' || e.target.closest('#btn-iniciar-worker-n4'))) simularYEnviarDatosNivel4();
+    if (e.target && (e.target.id === 'btn-iniciar-worker-n5' || e.target.closest('#btn-iniciar-worker-n5'))) simularYEnviarDatosNivel5();
+
+    // Eventos de reseteo individual
+    if (e.target && e.target.closest('#btn-reset-n1')) resetNivel1();
+    if (e.target && e.target.closest('#btn-reset-n2')) resetNivel2();
+    if (e.target && e.target.closest('#btn-reset-n3')) resetNivel3();
+    if (e.target && e.target.closest('#btn-reset-n4')) resetNivel4();
+    if (e.target && e.target.closest('#btn-reset-n5')) resetNivel5();
+
+    // LÓGICA DEL NUEVO MODAL DE REINICIO TOTAL
+    if (e.target && e.target.closest('#btn-reiniciar-todo')) {
+        document.getElementById('custom-modal-overlay').classList.remove('d-none');
     }
-    if (e.target && (e.target.id === 'btn-dibujar-mapa' || e.target.closest('#btn-dibujar-mapa'))) {
-        dibujarMapaCartografico();
+    if (e.target && e.target.id === 'btn-cancelar-reinicio') {
+        document.getElementById('custom-modal-overlay').classList.add('d-none');
     }
-    if (e.target && (e.target.id === 'btn-capturar-foto' || e.target.closest('#btn-capturar-foto'))) {
-        capturarFotografiaEvidencia();
-    }
-    if (e.target && (e.target.id === 'btn-iniciar-worker-n4' || e.target.closest('#btn-iniciar-worker-n4'))) {
-        simularYEnviarDatosNivel4();
-    }
-    if (e.target && (e.target.id === 'btn-iniciar-worker-n5' || e.target.closest('#btn-iniciar-worker-n5'))) {
-        simularYEnviarDatosNivel5();
+    if (e.target && e.target.id === 'btn-confirmar-reinicio') {
+        ejecutarReinicioTotal();
     }
 });
 
@@ -60,7 +69,7 @@ function cargarSidebar() {
 function marcarMenuActivo() {
     const itemsMenu = document.querySelectorAll('.sidebar-menu li');
     itemsMenu.forEach(li => {
-        if (li.id === 'theme-toggle-btn') return;
+        if (li.id === 'theme-toggle-btn' || li.id === 'btn-reiniciar-todo') return;
         li.addEventListener('click', function() {
             itemsMenu.forEach(item => item.classList.remove('active'));
             this.classList.add('active');
@@ -99,4 +108,54 @@ function mostrarError(errCont, resCont, mensaje) {
         errCont.classList.remove('d-none');
     }
     if (resCont) resCont.classList.add('d-none');
+}
+
+// --- SISTEMA DE NOTIFICACIONES TOAST ---
+function mostrarNotificacion(mensaje, tipo = 'success') {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none;';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `custom-toast toast-${tipo}`;
+    
+    let icon = 'fa-check-circle';
+    if (tipo === 'info') icon = 'fa-info-circle';
+    if (tipo === 'warning') icon = 'fa-exclamation-triangle';
+    if (tipo === 'danger') icon = 'fa-times-circle';
+    
+    toast.innerHTML = `
+        <div class="toast-icon"><i class="fas ${icon}"></i></div>
+        <div class="toast-message">${mensaje}</div>
+    `;
+    
+    container.appendChild(toast);
+    
+    // Forzar reflow para que la animación se ejecute
+    void toast.offsetWidth;
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400); 
+    }, 4000);
+}
+
+// --- FUNCIÓN DE REINICIO TOTAL ---
+function ejecutarReinicioTotal() {
+    // 1. Ocultar el modal
+    document.getElementById('custom-modal-overlay').classList.add('d-none');
+    
+    // 2. Limpiar datos y lanzar notificación
+    localStorage.removeItem('evidencia_explorador');
+    mostrarNotificacion("Vaciando memoria RAM y reiniciando sistema...", "danger");
+    
+    // 3. Recargar la página después de 1.5s para que el usuario alcance a leer el Toast
+    setTimeout(() => {
+        location.reload(); 
+    }, 1500);
 }
