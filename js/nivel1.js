@@ -38,8 +38,9 @@ function ejecutarGeolocalizacion() {
             }
 
             btnUbicacion.innerHTML = `<i class="fas fa-check-circle"></i> Ubicación Verificada`;
-            btnUbicacion.style.backgroundColor = "var(--success)";
-            btnUbicacion.style.boxShadow = "none";
+            btnUbicacion.className = "btn-success";
+            
+            document.getElementById('btn-reset-n1').classList.remove('d-none');
 
             nivel1Completado = true;
             nivel2Permitido = true;
@@ -76,4 +77,37 @@ function ejecutarGeolocalizacion() {
         },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
+}
+
+function resetNivel1(isCascading = false) {
+    const btnUbicacion = document.getElementById('btn-ubicacion');
+    const contenedorResultado = document.getElementById('resultado-ubicacion');
+    const badgeN1 = document.getElementById('badge-n1');
+
+    contenedorResultado.classList.add('d-none');
+    btnUbicacion.disabled = false;
+    btnUbicacion.innerHTML = `<i class="fas fa-satellite-dish"></i> Obtener Ubicación Actual`;
+    btnUbicacion.className = "btn-primary";
+    
+    document.getElementById('btn-reset-n1').classList.add('d-none');
+    
+    if (badgeN1) {
+        badgeN1.className = "badge bg-danger p-2";
+        badgeN1.textContent = "Desbloqueado";
+    }
+    const tarjetaN1 = document.querySelector('#nivel-1 .card');
+    if (tarjetaN1) {
+        tarjetaN1.classList.add('border-start-danger');
+        tarjetaN1.classList.remove('border-start-info'); 
+    }
+
+    // EFECTO CASCADA: Ocultar el Nivel 2 y forzar su reseteo
+    const seccionNivel2 = document.getElementById('nivel-2');
+    if (seccionNivel2) {
+        seccionNivel2.classList.add('nivel-oculto-real', 'opacity-50-custom');
+        document.getElementById('menu-n2')?.classList.add('sidebar-bloqueado');
+    }
+    resetNivel2(true);
+
+    if(!isCascading) mostrarNotificacion("Nivel 1 reiniciado. Vuelve a verificar tu ubicación.", "warning");
 }
