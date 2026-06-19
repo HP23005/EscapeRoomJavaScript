@@ -1,4 +1,3 @@
-# EscapeRoomJavaScript
 # Desarrollo y Técnicas de Aplicaciones Web - Parcial #3
 **Tema:** Escape Room Javascript: "La cámara de los cinco desafíos"
 
