@@ -26,7 +26,6 @@ function inicializarCamaraNativa() {
 
 function capturarFotografiaEvidencia() {
     const video = document.getElementById('webcam-video');
-    const placeholder = document.getElementById('foto-placeholder');
     const imgElement = document.getElementById('foto-img');
     const badgeN3 = document.getElementById('badge-n3');
 
@@ -47,7 +46,6 @@ function capturarFotografiaEvidencia() {
     if (imgElement) {
         imgElement.src = base64DataImage;
         imgElement.classList.remove('d-none');
-        if (placeholder) placeholder.classList.add('d-none');
     }
 
     if (badgeN3) {
@@ -55,11 +53,10 @@ function capturarFotografiaEvidencia() {
         badgeN3.textContent = "Completado";
     }
 
-    if (streamCamara) {
-        streamCamara.getTracks().forEach(track => track.stop());
-    }
+    document.getElementById('btn-capturar-foto').classList.add('d-none');
+    document.getElementById('btn-reset-n3').classList.remove('d-none');
 
-    alert("📸 ¡Fotografía almacenada con éxito en LocalStorage! Desafío 3 Completado.");
+    mostrarNotificacion("Fotografía almacenada en LocalStorage. ¡Desafío 3 Completado!", "success");
     
     const tarjetaN3 = document.querySelector('#nivel-3 .card');
     if (tarjetaN3) {
@@ -88,4 +85,37 @@ function mostrarErrorEnCamara(mensaje) {
         contenedorError.textContent = mensaje;
         contenedorError.classList.remove('d-none');
     }
+}
+
+function resetNivel3(isCascading = false) {
+    const imgElement = document.getElementById('foto-img');
+    const btnCapturar = document.getElementById('btn-capturar-foto');
+    const badgeN3 = document.getElementById('badge-n3');
+    
+    imgElement.classList.add('d-none');
+    imgElement.src = "";
+    localStorage.removeItem('evidencia_explorador');
+    
+    btnCapturar.classList.remove('d-none');
+    document.getElementById('btn-reset-n3').classList.add('d-none');
+    
+    if (badgeN3) {
+        badgeN3.className = "badge bg-danger p-2";
+        badgeN3.textContent = "Desbloqueado";
+    }
+    const tarjetaN3 = document.querySelector('#nivel-3 .card');
+    if (tarjetaN3) {
+        tarjetaN3.classList.add('border-start-danger');
+        tarjetaN3.classList.remove('border-start-info');
+    }
+
+    // EFECTO CASCADA: Ocultar el Nivel 4 y forzar su reseteo
+    const seccionNivel4 = document.getElementById('nivel-4');
+    if (seccionNivel4) {
+        seccionNivel4.classList.add('nivel-oculto-real', 'opacity-50-custom');
+        document.getElementById('menu-n4')?.classList.add('sidebar-bloqueado');
+    }
+    resetNivel4(true);
+
+    if(!isCascading) mostrarNotificacion("Nivel 3 reiniciado. La fotografía se ha borrado.", "warning");
 }

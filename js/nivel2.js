@@ -63,7 +63,9 @@ function dibujarMapaCartografico() {
         badgeN2.textContent = "Completado";
     }
     btnDibujar.innerHTML = `<i class="fas fa-sync-alt"></i> Actualizar Telemetría`;
-    btnDibujar.className = "btn btn-success text-white fw-bold px-4 mb-3";
+    btnDibujar.className = "btn btn-success text-white fw-bold px-4";
+
+    document.getElementById('btn-reset-n2').classList.remove('d-none');
 
     const tarjetaN2 = document.querySelector('#nivel-2 .card');
     if (tarjetaN2) {
@@ -85,4 +87,38 @@ function dibujarMapaCartografico() {
             inicializarCamaraNativa(); 
         }, 150);
     }
+}
+
+function resetNivel2(isCascading = false) {
+    const canvas = document.getElementById('mapa-canvas');
+    const btnDibujar = document.getElementById('btn-dibujar-mapa');
+    const badgeN2 = document.getElementById('badge-n2');
+    
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.style.display = 'none';
+    
+    btnDibujar.innerHTML = `<i class="fas fa-pencil-alt"></i> Generar Mapa Cartográfico`;
+    btnDibujar.className = "btn btn-info text-dark fw-bold px-4";
+    document.getElementById('btn-reset-n2').classList.add('d-none');
+    
+    if (badgeN2) {
+        badgeN2.className = "badge bg-danger p-2";
+        badgeN2.textContent = "Desbloqueado";
+    }
+    const tarjetaN2 = document.querySelector('#nivel-2 .card');
+    if (tarjetaN2) {
+        tarjetaN2.classList.add('border-start-danger');
+        tarjetaN2.classList.remove('border-start-info'); 
+    }
+
+    // EFECTO CASCADA: Ocultar el Nivel 3 y forzar su reseteo
+    const seccionNivel3 = document.getElementById('nivel-3');
+    if (seccionNivel3) {
+        seccionNivel3.classList.add('nivel-oculto-real', 'opacity-50-custom');
+        document.getElementById('menu-n3')?.classList.add('sidebar-bloqueado');
+    }
+    resetNivel3(true);
+
+    if(!isCascading) mostrarNotificacion("Nivel 2 reiniciado. Vuelve a dibujar el mapa.", "warning");
 }
