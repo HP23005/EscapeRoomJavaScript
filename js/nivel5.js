@@ -1,11 +1,16 @@
 // js/nivel5.js
 
 function simularYEnviarDatosNivel5() {
+    const btnIniciar = document.getElementById('btn-iniciar-worker-n5');
     const progressTextN5 = document.getElementById('progress-text-n5');
     const progressBarN5 = document.getElementById('progress-bar-n5');
     const progressPercentageN5 = document.getElementById('progress-percentage-n5');
 
-    if (progressTextN5) progressTextN5.textContent = "⚙️ Fabricando 250,000 registros virtuales cuánticos...";
+    if (btnIniciar.disabled) return;
+    btnIniciar.disabled = true;
+    btnIniciar.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Abriendo Portal...`;
+
+    if (progressTextN5) progressTextN5.textContent = "Fabricando 250,000 registros virtuales cuánticos...";
 
     const registrosPesados = [];
     for (let i = 0; i < 250000; i++) {
@@ -29,15 +34,18 @@ function simularYEnviarDatosNivel5() {
         if (estado === "PROGRESO_N5") {
             if (progressBarN5) progressBarN5.style.width = `${porcentaje}%`;
             if (progressPercentageN5) progressPercentageN5.textContent = `${porcentaje}%`;
-            if (progressTextN5) progressTextN5.textContent = `⚡ Filtrando anomalías cuánticas en segundo plano...`;
+            if (progressTextN5) progressTextN5.textContent = `Filtrando anomalías cuánticas en segundo plano...`;
         }
 
         if (estado === "FINALIZADO_N5") {
-            if (progressTextN5) progressTextN5.textContent = "✅ ¡Portal Cuántico procesado con éxito!";
+            if (progressTextN5) progressTextN5.textContent = "¡Portal Cuántico procesado con éxito!";
             if (progressBarN5) {
                 progressBarN5.classList.remove('progress-bar-animated');
                 progressBarN5.className = "progress-bar bg-success";
             }
+            
+            btnIniciar.innerHTML = `<i class="fas fa-check-double"></i> Portal Estabilizado`;
+            btnIniciar.classList.replace('btn-danger', 'btn-success');
             
             inyectarResultadosEnCardN5(resultados);
             miWorkerN5.terminate();
@@ -99,11 +107,47 @@ function inyectarResultadosEnCardN5(res) {
         badgeN5.textContent = "Completado";
     }
 
-    alert("🌌 ¡Felicidades! Has completado el Desafío 5 de forma exitosa. Los hilos paralelos protegieron tu interfaz y tu archivo JSON está listo.");
+    document.getElementById('btn-reset-n5').classList.remove('d-none');
+
+    mostrarNotificacion("Portal Cuántico cerrado. JSON generado exitosamente.", "success");
 
     const tarjetaN5 = document.querySelector('#nivel-5 .card');
     if (tarjetaN5) {
         tarjetaN5.classList.remove('border-start-danger');
         tarjetaN5.classList.add('border-start-info'); 
     }
+}
+
+function resetNivel5(isCascading = false) {
+    const btnIniciar = document.getElementById('btn-iniciar-worker-n5');
+    const contenedorResultados = document.getElementById('resultados-worker-n5');
+    const bloqueDescarga = document.getElementById('bloque-descarga-n5');
+    const progressBar = document.getElementById('progress-bar-n5');
+    const badgeN5 = document.getElementById('badge-n5');
+    
+    contenedorResultados.classList.add('d-none');
+    bloqueDescarga.classList.add('d-none');
+    
+    btnIniciar.disabled = false;
+    btnIniciar.innerHTML = `<i class="fas fa-bolt"></i> Abrir Portal Cuántico`;
+    btnIniciar.className = "btn btn-danger fw-bold px-4";
+    
+    progressBar.style.width = "0%";
+    progressBar.className = "progress-bar progress-bar-striped progress-bar-animated bg-danger";
+    document.getElementById('progress-percentage-n5').textContent = "0%";
+    document.getElementById('progress-text-n5').textContent = "Estado: En espera";
+    
+    document.getElementById('btn-reset-n5').classList.add('d-none');
+    
+    if (badgeN5) {
+        badgeN5.className = "badge bg-danger p-2";
+        badgeN5.textContent = "Desbloqueado";
+    }
+    const tarjetaN5 = document.querySelector('#nivel-5 .card');
+    if (tarjetaN5) {
+        tarjetaN5.classList.add('border-start-danger');
+        tarjetaN5.classList.remove('border-start-info'); 
+    }
+
+    if(!isCascading) mostrarNotificacion("Nivel 5 reiniciado. Los resultados JSON se han descartado.", "warning");
 }
